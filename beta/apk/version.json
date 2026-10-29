@@ -1,0 +1,8 @@
+{
+ "versionCode": 4,
+ "versionName": "0.4",
+ "url": "https://pools-cloud.github.io/seguimiento/beta/apk/EntrenoBeta.apk",
+ "cambios": [
+  "Fin del descanso: el pitido suena a su hora aunque estés en otra app o con Spotify (la música baja un momento); en la barra de avisos se ve la cuenta atrás"
+ ]
+}

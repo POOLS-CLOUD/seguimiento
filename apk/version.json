@@ -1,0 +1,9 @@
+{
+ "versionCode": 7,
+ "versionName": "1.0",
+ "url": "https://pools-cloud.github.io/seguimiento/apk/Entreno.apk",
+ "cambios": [
+  "Versión 1.0: la app definitiva. «Hoy toca» trae el registro del entreno serie a serie (la antigua beta), con Rutinas y el temporizador ⏱ en el menú",
+  "El microciclo pasa solo al acabar cada semana D1-D4, el calendario enseña D1M1, D2M1… hasta acabar el microciclo 4 y se puede quitar un entreno de su semana"
+ ]
+}

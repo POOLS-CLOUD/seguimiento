@@ -1,0 +1,61 @@
+# Actualiza la página con el PC apagado (src/nube.js de la app). El registro es público: no saca nada de los datos.
+name: Actualizar
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+    inputs:
+      forzar:
+        description: 'Publicar aunque no haya cambios'
+        type: boolean
+        default: false
+permissions:
+  contents: write
+  pages: write
+concurrency:
+  group: actualizar
+  cancel-in-progress: false
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      TZ: Europe/Madrid
+      NUBE_CLAVE: ${{ secrets.NUBE_CLAVE }}
+      APP_PYTHON: python
+      CAMBIO: ${{ github.workspace }}/cambio
+      FORZAR: ${{ inputs.forzar && '1' || '' }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          path: sitio
+          fetch-depth: 1
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 20
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Preparar
+        run: |
+          if [ -z "$NUBE_CLAVE" ]; then echo "Falta el secreto NUBE_CLAVE"; exit 1; fi
+          node sitio/nube-arranque.js sitio/estado.enc app > /dev/null 2>&1 || { echo "No se ha podido abrir estado.enc (¿NUBE_CLAVE distinta de la del PC?)"; exit 1; }
+          pip install --quiet openpyxl > /dev/null 2>&1 || { echo "error instalando openpyxl"; exit 1; }
+          cd app && npm install --omit=dev --no-audit --no-fund > /dev/null 2>&1 || { echo "error instalando la app"; exit 1; }
+      - name: Actualizar
+        run: |
+          mv sitio app/datos/publicar
+          cd app && node src/nube.js > /dev/null 2>&1 || { echo "error"; exit 1; }
+          echo ok
+      - name: Publicar
+        run: |
+          if [ ! -f "$CAMBIO" ]; then echo "sin cambios"; exit 0; fi
+          cd app/datos/publicar
+          git config user.name seguimiento
+          git config user.email seguimiento@users.noreply.github.com
+          git checkout -q --orphan nueva
+          git add -A > /dev/null
+          git commit -q -m "Actualización" > /dev/null
+          git push -q -f origin nueva:main > /dev/null 2>&1 || { echo "error al subir"; exit 1; }
+          curl -s -o /dev/null -X POST -H "Authorization: Bearer ${{ github.token }}" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/${{ github.repository }}/pages/builds" || true
+          echo publicado
