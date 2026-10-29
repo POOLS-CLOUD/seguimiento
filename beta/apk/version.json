@@ -1,0 +1,8 @@
+{
+ "versionCode": 3,
+ "versionName": "0.3",
+ "url": "https://pools-cloud.github.io/seguimiento/beta/apk/EntrenoBeta.apk",
+ "cambios": [
+  "Fin del descanso: un solo pitido largo, sin aviso emergente ni vibración (suena aunque estés en otra app o en silencio)"
+ ]
+}
