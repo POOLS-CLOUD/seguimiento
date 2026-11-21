@@ -1,0 +1,8 @@
+{
+ "versionCode": 6,
+ "versionName": "1.5",
+ "url": "https://pools-cloud.github.io/seguimiento/apk/Entreno.apk",
+ "cambios": [
+  "Fin del descanso: el pitido suena a su hora aunque estés en otra app o con Spotify (la música baja un momento); en la barra de avisos se ve la cuenta atrás"
+ ]
+}
